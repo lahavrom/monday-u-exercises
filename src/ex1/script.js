@@ -1,4 +1,33 @@
 
+function createTask(value){
+    const task_text = document.createElement("p");
+    task_text.innerText = value;
+    const task_elem = document.createElement("div");
+    task_elem.className = "tasks";
+    task_elem.onclick = () => alert("Task: \n" + task_text.innerText);
+    task_elem.appendChild(task_text);
+    task_elem.appendChild(taskTime());
+    return task_elem;
+};
+
+
+function createDeleteBtn(task_section){
+    const delete_btn = document.createElement("button");
+    delete_btn.className = "deleteBtn";
+    delete_btn.onclick = () => {
+        task_section.classList.add("removed");
+        setTimeout(() => {
+            task_section.remove();
+        }, 1000);
+        return;
+    }
+    const deleteIcon = document.createElement("i");
+    deleteIcon.className = "fa fa-trash-o";
+    delete_btn.appendChild(deleteIcon);
+    return delete_btn;
+};
+
+
 function addTask(){
     const task = document.getElementById('newTask');
     // check if entered empty task
@@ -6,40 +35,17 @@ function addTask(){
         alert("You forgot to type the task!");
         return;
     }
-    if (document.getElementById(task.value) !== null){
-        alert("You already have that task!");
-        task.value = '';
-        return;
-    }
     if (task.value){
         // create div for task + delete button
         const task_section = document.createElement("div");
         task_section.className = "taskSection";
-        task_section.id = task.value;
+        task_section.id = String(task.value) + countID;
+        countID++;
         document.body.querySelector("div.taskList").appendChild(task_section);
-        // create the task
-        const task_elem = document.createElement("div");
-        task_elem.className = "tasks";
-        task_elem.onclick = () => alert("Task: \n" + task_text.innerText);
-        const task_text = document.createElement("p");
-        task_text.innerText = task.value;
-        task_elem.appendChild(task_text);
-        task_elem.appendChild(taskTime());
-        document.getElementById(task.value).appendChild(task_elem);
+        // create the task    
+        document.getElementById(task_section.id).appendChild(createTask(task.value));
         // create delete button
-        const delete_btn = document.createElement("button");
-        delete_btn.className = "deleteBtn";
-        delete_btn.onclick = () => {
-            task_section.classList.add("removed");
-            setTimeout(() => {
-                task_section.remove(); 
-            }, 1000);
-            return;
-        }
-        const deleteIcon = document.createElement("i");
-        deleteIcon.className = "fa fa-trash-o";
-        delete_btn.appendChild(deleteIcon);
-        document.getElementById(task.value).appendChild(delete_btn);
+        document.getElementById(task_section.id).appendChild(createDeleteBtn(task_section));
         // delete input
         task.value = '';        
     }
@@ -66,8 +72,8 @@ function taskTime(){
 
 // clear all tasks
 function clearAll(){
-    const tasks = document.body.querySelectorAll("div.taskSection");
-    tasks.forEach(elem => {
+    const taskSection = document.body.querySelectorAll("div.taskSection");
+    taskSection.forEach(elem => {
         elem.classList.add("removed");
         setTimeout(()=> {
             elem.remove();
@@ -110,6 +116,9 @@ function sortAZ(){
         taskSections[i].parentNode.appendChild(ts_array[i]);
     }
 };
+
+// to make each task unique -> so can have multiple tasks with same name
+let countID = 1;
 
 // each time sort button is clicked it sorts the tasks ascending/descending
 let asc_AZ = true;
