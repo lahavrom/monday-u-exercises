@@ -12,19 +12,19 @@
 
         <div class="addTask">
             <input type="text" id="newTask" maxlength="25" placeholder="Add your new task!">
-            <button id="addBtn" class="addBtn" onclick="addTask()"><i class="fa fa-plus"></i></button>
+            <button id="addBtn" class="addBtn"><i class="fa fa-plus"></i></button>
         </div>
         <hr>
         <div class="taskList"></div>
         <div class="bottom">
-            <button class="functionBtn" onclick="sortAZ()">Sort By Name</button>
-            <button class="functionBtn" onclick="sortTime()">Sort By Date</button>
-            <button class="functionBtn" onclick="clearAll()">Clear All</button>
+            <button class="functionBtn" id="sortName">Sort By Name</button>
+            <button class="functionBtn" id="sortDate">Sort By Date</button>
+            <button class="functionBtn" id="clearAll">Clear All</button>
         </div>
     </div>
 
 
 
 </body>
-<script src="script.js"></script>
+<script type="module" src="Main.js"></script>
 </html>
