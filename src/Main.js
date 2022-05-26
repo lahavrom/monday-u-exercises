@@ -39,6 +39,7 @@ class Main {
         return delete_btn;
     };
 
+    // adds the task to the itemManager and adds it to the DOM
     add1Task(task, pokemon) { 
         // add to itemManager
         const result = this.itemManager.addTask(task, this.countID, pokemon);
@@ -65,7 +66,7 @@ class Main {
             return;
         }
         if (task.value){
-            const [taskSplit, pokemon] = await this.itemManager.handleTask(task.value);
+            const [taskSplit, pokemon] = await this.itemManager.handleTask(task.value); // returns the tasks to add as an array
             for (let t of taskSplit){
                 this.add1Task(t, pokemon);
             }
@@ -178,3 +179,4 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+console.log(main.itemManager.tasks);

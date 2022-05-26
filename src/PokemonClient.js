@@ -11,17 +11,21 @@ export class PokemonClient {
                 throw "Failed to retrieve with this id";
             }
             const pokemon_name = await pokemon.json();
-            console.log(pokemon_name);
             return [pokemon_name, true];
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return ["Pokemon with ID " + id + " was not found", false];
         }
     };
 
     async getListPokemon(id_array) {
         try {
-            const response = await Promise.all(id_array.map(elem => fetch(this.API_BASE + elem.replace(/\s/g, ''))));
+            const response = await Promise.all(id_array.map(elem => {
+                if (isNaN(elem) || !elem) {
+                    throw "Failed to retrieve with this ID";
+                }
+                return fetch(this.API_BASE + elem.trim());
+            }));
             response.forEach(elem => {
                 if (elem.status !== 200){
                     throw "Failed to retrieve with this ID";
@@ -29,7 +33,7 @@ export class PokemonClient {
             });
             return [response.map(elem => elem.json()), true];
         } catch(err) {
-            console.log(err);
+            // console.log(err);
             return ["Failed to fetch pokemons with this input: " + id_array, false];
         }
     }
