@@ -1,6 +1,4 @@
 
-import { ItemManager } from "./ItemManager.js";
-
 class Main {
     constructor() {
         // to make each task unique -> so can have multiple tasks with same name
@@ -177,6 +175,3 @@ const main = new Main();
 document.addEventListener("DOMContentLoaded", function () {
     main.init();
 });
-
-
-console.log(main.itemManager.tasks);

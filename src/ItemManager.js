@@ -1,6 +1,5 @@
-import { PokemonClient } from "./PokemonClient.js";
 
-export class ItemManager {
+class ItemManager {
     constructor() {
         this.tasks = [];
         this.pokemonClient = new PokemonClient();

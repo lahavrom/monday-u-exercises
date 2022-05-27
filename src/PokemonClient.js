@@ -1,5 +1,5 @@
 
-export class PokemonClient {
+class PokemonClient {
     constructor() {
         this.API_BASE = "https://pokeapi.co/api/v2/pokemon/";
     }
