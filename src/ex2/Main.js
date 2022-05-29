@@ -9,14 +9,15 @@ class Main {
         this.itemManager = new ItemManager();
     };
 
-    createTask(value){
+
+    createTask(value, date){
         const task_text = document.createElement("p");
         task_text.innerText = value;
         const task_elem = document.createElement("div");
         task_elem.className = "tasks";
         task_elem.onclick = () => alert("Task: \n" + task_text.innerText);
         task_elem.appendChild(task_text);
-        task_elem.appendChild(this.taskTime());
+        task_elem.appendChild(this.taskTime(date));
         return task_elem;
     };
 
@@ -37,25 +38,24 @@ class Main {
         return delete_btn;
     };
 
-    // adds the task to the itemManager and adds it to the DOM
-    add1Task(task, pokemon) { 
-        // add to itemManager
-        const result = this.itemManager.addTask(task, this.countID, pokemon);
-        if (!result){
-            alert("You already entered this task:\n" + task);
-            return;
-        }
-        // create div for task + delete button
-        const task_section = document.createElement("div");
-        task_section.className = "taskSection";
-        task_section.id = String(task) + this.countID;
-        this.countID++;
-        document.body.querySelector("div.taskList").appendChild(task_section);
-        // create the task    
-        document.getElementById(task_section.id).appendChild(this.createTask(task));
-        // create delete button
-        document.getElementById(task_section.id).appendChild(this.createDeleteBtn(task_section));  
+
+    renderTasks(){
+        // clear all tasks
+        document.body.querySelector("div.taskList").innerHTML = '';        
+        // render tasks
+        this.itemManager.tasks.forEach(item => {
+            // create div for task + delete button
+            const task_section = document.createElement("div");
+            task_section.className = "taskSection";
+            task_section.id = item.task + item.taskId;
+            document.body.querySelector("div.taskList").appendChild(task_section);
+            // create the task    
+            document.getElementById(task_section.id).appendChild(this.createTask(item.task, item.date));
+            // create delete button
+            document.getElementById(task_section.id).appendChild(this.createDeleteBtn(task_section));
+        });
     }
+
 
     async addTask(task){
         // check if entered empty task
@@ -64,33 +64,71 @@ class Main {
             return;
         }
         if (task.value){
-            const [taskSplit, pokemon] = await this.itemManager.handleTask(task.value); // returns the tasks to add as an array
-            for (let t of taskSplit){
-                this.add1Task(t, pokemon);
+
+            let taskSplit = task.value.split(",");
+            if (isNaN(taskSplit[0])) {  // if regular task
+                this.itemManager.addRegTask(task.value, this.countID, new Date());
+                this.countID++;
+                this.renderTasks();
+                task.value = '';  // delete input
+                return;
             }
-            // delete input
-            task.value = ''; 
+            try { // enter pokemon task
+                const pokemons = await this.itemManager.getPokemon(taskSplit);
+                if (pokemons.length === 1){
+                    this.itemManager.addPokemon(pokemons[0], this.countID, new Date());
+                    this.countID++
+                } else {
+                    for (let p of pokemons) {
+                        const pokemon = await p;
+                        try {
+                            this.itemManager.addPokemon(pokemon, this.countID, new Date());
+                            this.countID++;
+                        } catch(error){
+                            if (error instanceof PokemonAlreadyInError) {
+                                alert("You already entered this task:\n" + error.message);
+                            }
+                        }
+                    }
+                }
+            } catch(error) {
+                if (error instanceof PokemonAlreadyInError) {
+                    alert("You already entered this task:\n" + error.message);
+                }
+                if (error instanceof FailedFetchPokemonError) {
+                    if (taskSplit.length === 1){
+                        this.itemManager.addRegTask(`Pokemon with ID ${task.value} was not found`, this.countID, new Date());
+                        this.countID++;
+                    } else{
+                        this.itemManager.addRegTask("Failed to fetch pokemons with this input: " + error.message, this.countID, new Date());
+                        this.countID++;
+                    }
+                }
+            }
+            this.renderTasks();
+            task.value = '';  // delete input
         }
     };
 
+
     // returns the element that shows the date & time the task created
-    taskTime(){
-        const today = new Date();
+    taskTime(date){
         const p = document.createElement("p");
-        let minutes = String(today.getMinutes());
+        let minutes = String(date.getMinutes());
         if (minutes.length === 1){
             minutes = "0" + minutes;
         }
-        p.innerHTML = today.getDate() + "/" + 
-                    (today.getMonth()+1) + "/" + 
-                    today.getFullYear() + "<br/>" + 
-                    today.getHours() + ":" + 
-                    minutes;
+        p.innerHTML = date.getDate() + "/" + 
+                      (date.getMonth()+1) + "/" + 
+                      date.getFullYear() + "<br/>" + 
+                      date.getHours() + ":" + 
+                      minutes;
         p.className = "time";
-        p.id = today;
+        p.id = date;
         p.style.fontSize = '10px';
         return p;
     };
+
 
     // clear all tasks
     clearAll(){
@@ -104,10 +142,11 @@ class Main {
         });
     };
 
+
     // sort tasks by date they created
     sortTime(){
         const taskSections = document.body.querySelectorAll("div.taskSection");
-        let ts_array = [].map.call(taskSections, function(elem){return elem;});
+        let ts_array = [].map.call(taskSections, (elem) => {return elem;});
         ts_array.sort((a,b) => {
             a = a.querySelector("div.tasks").querySelector("p.time").id;
             b = b.querySelector("div.tasks").querySelector("p.time").id;
@@ -122,10 +161,11 @@ class Main {
         }
     };
 
+
     // sort tasks by name
     sortAZ(){
         const taskSections = document.body.querySelectorAll("div.taskSection");
-        let ts_array = [].map.call(taskSections, function(elem){return elem;});
+        let ts_array = [].map.call(taskSections, (elem) => {return elem;});
         ts_array.sort((a,b) => {
             a = a.querySelector("div.tasks").querySelector("p").innerText;
             b = b.querySelector("div.tasks").querySelector("p").innerText;
@@ -140,6 +180,7 @@ class Main {
         }
     };
 
+    
     // adding the event listeners for buttons functions
     init(){
         const addBtn = document.getElementById("addBtn");
@@ -154,19 +195,12 @@ class Main {
             }
         });
         const clearAllBtn = document.getElementById("clearAll");
-        clearAllBtn.addEventListener("click", () => {
-            this.clearAll();
-        });
+        clearAllBtn.addEventListener("click", () => this.clearAll());
         const dateSort = document.getElementById("sortDate");
-        dateSort.addEventListener("click", () => {
-            this.sortTime();
-        });
+        dateSort.addEventListener("click", () => this.sortTime());
         const nameSort = document.getElementById("sortName");
-        nameSort.addEventListener("click", () => {
-            this.sortAZ();
-        });
+        nameSort.addEventListener("click", () => this.sortAZ());
     };
-
 }
 
 
