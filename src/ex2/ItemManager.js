@@ -10,7 +10,6 @@ class ItemManager {
     };
 
     addPokemon(pokemon, taskId, date) {        
-        // const pokemon = await this.pokemonClient.getPokemon(pokemonId);
         const task = `Catch ${pokemon.name}, the ${pokemon.types[0].type.name} type pokemon`;
         if (this.tasks.find(value => value.task === task)) {
             throw new PokemonAlreadyInError(task);
