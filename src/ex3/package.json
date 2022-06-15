@@ -1,0 +1,28 @@
+{
+  "name": "monday-u-todo-cli",
+  "version": "1.0.1",
+  "description": "cli tool to add, delete and view todos",
+  "main": "CLI.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node CLI.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lahavrom/monday-u-exercises.git"
+  },
+  "author": "Lahav Rom",
+  "license": "ISC",
+  "bin": "./CLI.js",
+  "dependencies": {
+    "asciify-image": "^0.1.8",
+    "chalk": "^5.0.1",
+    "chalk-animation": "^2.0.2",
+    "commander": "^9.3.0",
+    "figlet": "^1.5.2",
+    "gradient-string": "^2.0.1",
+    "inquirer": "^8.2.4",
+    "node-fetch": "^3.2.4"
+  }
+}
