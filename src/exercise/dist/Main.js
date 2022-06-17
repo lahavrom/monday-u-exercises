@@ -28,7 +28,6 @@ class Main {
                 task_section.remove();
                 const task_date = task_section.querySelectorAll('p');
                 this.itemClient.deleteTask(task_date[0].innerText, task_date[1].id);
-                // this.itemManager.removeTask(task_section.id);
             }, 800);
             return;
         }
@@ -58,12 +57,23 @@ class Main {
 
     async addTask(task) {
         if (task.value === ''){
-            alert("You forgot to type the task!");
+            task.setCustomValidity("You forgot to type the task!");
+            task.reportValidity();
             return;
         }
+        const loader = document.getElementsByClassName("loader")[0];
+        loader.style.display = 'block';
         if (task.value) {
-            await this.itemClient.addTask(task.value, new Date());
+            try{
+                await this.itemClient.addTask(task.value, new Date());
+            } catch(error) {
+                loader.style.display = 'none';
+                task.setCustomValidity(error.message);
+                task.reportValidity();
+                return;
+            }
         }
+        loader.style.display = 'none';
         await this.renderTasks();
         task.value = '';
     }

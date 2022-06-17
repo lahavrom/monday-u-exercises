@@ -1,4 +1,3 @@
-// const { PokemonAlreadyInError, FailedFetchPokemonError } = require('');
 const fs = require('fs').promises;
 const PokemonClient = require('../clients/PokemonClient');
 const tasksFile = 'tasks.json';
@@ -11,6 +10,7 @@ module.exports = class ItemManager {
         this.FailedFetchPokemonError.statusCode = 400;
         this.PokemonAlreadyInError = new Error();
         this.PokemonAlreadyInError.statusCode = 400;
+        this.SystemFail = new Error("Something went wrong, try again later");
     }
 
     async getTasks(){
@@ -19,6 +19,7 @@ module.exports = class ItemManager {
             return JSON.parse(data.toString());
         } catch(err) {
             console.log(`Got an error trying to read the file: ${error.message}`);
+            throw this.SystemFail;
         }
     }
 
@@ -27,7 +28,8 @@ module.exports = class ItemManager {
             const pokemons = await this.pokemonClient.getPokemon(pokemonIds);
             return pokemons;
         } catch (error) {
-            throw FailedFetchPokemonError;
+            this.FailedFetchPokemonError.message = `Failed to fetch pokemons with this input ${pokemonIds}`;
+            throw this.FailedFetchPokemonError;
         }
     }
 
@@ -41,6 +43,7 @@ module.exports = class ItemManager {
             await fs.writeFile(tasksFile, JSON.stringify(data));
         } catch (error) {
             console.error(`Failed to write to file ${error.message}`);
+            throw this.SystemFail;
         }
     }
 
@@ -59,6 +62,7 @@ module.exports = class ItemManager {
             await fs.writeFile(tasksFile, JSON.stringify(data));
         } catch (error) {
             console.error(`Failed to write to file ${error.message}`);
+            throw this.SystemFail;
         }
     }
 
@@ -87,8 +91,8 @@ module.exports = class ItemManager {
             await fs.writeFile(tasksFile, JSON.stringify(data));
         } catch (error) {
             console.error(`Failed to write to file ${error.message}`);
+            throw this.SystemFail;
         }
     };
 
 }
-

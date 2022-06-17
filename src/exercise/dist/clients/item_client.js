@@ -13,17 +13,21 @@ class ItemClient {
     }
 
     async addTask(task, date){
-        await axios({
-            method: 'post',
-            url: this.API_BASE,
-            data: {
-                "task": task,
-                "date": date
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        try{
+            await axios({
+                method: 'post',
+                url: this.API_BASE,
+                data: {
+                    "task": task,
+                    "date": date
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch(error){
+            throw new Error(error.response.data);
+        }
     }
 
     async deleteTask(task, date) {

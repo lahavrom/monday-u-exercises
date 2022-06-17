@@ -18,7 +18,12 @@ async function addTask(req, res) {
         error.statusCode = 400;
         throw error;
     }
-    await itemManager.addTask(req.body);
+    try{
+        await itemManager.addTask(req.body);
+    } catch(error) {
+        // throw error;
+        return res.status(400).json(error.message);
+    }
     res.status(200).json(req.body);
 }
 
