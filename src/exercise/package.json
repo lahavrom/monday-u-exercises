@@ -1,0 +1,23 @@
+{
+  "name": "ex4",
+  "version": "1.0.0",
+  "description": "server that will handle all our todo items",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "start:dev": "nodemon server.js"
+  },
+  "author": "Lahav Rom",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "body-parser": "^1.20.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "fs": "0.0.1-security",
+    "nodemon": "^2.0.16"
+  }
+}

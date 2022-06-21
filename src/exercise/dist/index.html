@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>DoDo App</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">DoDo App</h1>
+        <sub class="subTitle">The app that will help you do</sub>
+
+        <div class="addTask">
+            <input type="text" id="newTask" maxlength="25" placeholder="Add your new task!">
+            <div class="loader"></div>
+            <button id="addBtn" class="addBtn"><i class="fa fa-plus"></i></button>
+        </div>
+        <hr>
+        <div class="taskList"></div>
+        <div class="bottom">
+            <button class="functionBtn" id="sortName">Sort By Name</button>
+            <button class="functionBtn" id="sortDate">Sort By Date</button>
+            <button class="functionBtn" id="clearAll">Clear All</button>
+        </div>
+    </div>
+
+
+
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="./clients/item_client.js"></script>
+<script src="Main.js"></script>
+</html>
