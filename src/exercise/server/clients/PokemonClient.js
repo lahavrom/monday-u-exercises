@@ -1,5 +1,5 @@
-
 const axios = require('axios').default;
+const { FailedFetchPokemonError } = require('../Errors');
 
 module.exports = class PokemonClient {
     constructor() {
@@ -7,19 +7,8 @@ module.exports = class PokemonClient {
     }
 
     async getPokemon(pokemonIds) {
-        const FailedFetchPokemonError = new Error(`Failed to fetch pokemons with this input: ${pokemonIds}`);
+        FailedFetchPokemonError.message = `Failed to fetch pokemons with this input: ${pokemonIds}`;
         FailedFetchPokemonError.statusCode = 400;
-        if (pokemonIds.length === 1){
-            try {
-                const pokemon = await axios.get(this.API_BASE + pokemonIds[0]);
-                if (pokemon.status !== 200) {
-                    throw FailedFetchPokemonError;
-                }
-                return [pokemon.data];
-            } catch (error) {
-                throw FailedFetchPokemonError;
-            }
-        }
         try {
             const response = await Promise.all(pokemonIds.map(pokemonId => {
                 if (isNaN(pokemonId) || !pokemonId) {

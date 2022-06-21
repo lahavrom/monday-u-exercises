@@ -1,57 +1,52 @@
-
 class Main {
     constructor() {
         // when sort button is clicked it sorts the tasks ascending/descending
-        this.asc_AZ = true;
-        this.asc_time = false;
+        this.ascAZ = true;
+        this.ascTime = false;
         this.itemClient = new ItemClient();
     };
 
-
     createTask(value, date){
-        const task_text = document.createElement("p");
-        task_text.innerText = value;
-        const task_elem = document.createElement("div");
-        task_elem.className = "tasks";
-        task_elem.onclick = () => alert("Task: \n" + task_text.innerText);
-        task_elem.appendChild(task_text);
-        task_elem.appendChild(this.taskTime(date));
-        return task_elem;
+        const taskText = document.createElement("p");
+        taskText.innerText = value;
+        const taskElem = document.createElement("div");
+        taskElem.className = "tasks";
+        taskElem.onclick = () => alert("Task: \n" + taskText.innerText);
+        taskElem.appendChild(taskText);
+        taskElem.appendChild(this.taskTime(date));
+        return taskElem;
     };
 
-    createDeleteBtn(task_section){
-        const delete_btn = document.createElement("button");
-        delete_btn.className = "deleteBtn";
-        delete_btn.onclick = () => {
-            task_section.classList.add("removed");
+    createDeleteBtn(taskSection){
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "deleteBtn";
+        deleteBtn.onclick = () => {
+            taskSection.classList.add("removed");
             setTimeout(() => {
-                task_section.remove();
-                const task_date = task_section.querySelectorAll('p');
-                this.itemClient.deleteTask(task_date[0].innerText, task_date[1].id);
+                taskSection.remove();
+                this.itemClient.deleteTask(taskSection.id);
             }, 800);
             return;
         }
         const deleteIcon = document.createElement("i");
         deleteIcon.className = "fa fa-trash-o";
-        delete_btn.appendChild(deleteIcon);
-        return delete_btn;
+        deleteBtn.appendChild(deleteIcon);
+        return deleteBtn;
     };
 
-
+    /**
+     * clear tasks, then creates the task div and delete button elements
+     */
     async renderTasks(){
-        // clear all tasks
         document.body.querySelector("div.taskList").innerHTML = '';        
-        // render tasks
         const tasks = await this.itemClient.getTasks();
         tasks.data.forEach(item => {
-            // create div for task + delete button
-            const task_section = document.createElement("div");
-            task_section.className = "taskSection";
-            document.body.querySelector("div.taskList").appendChild(task_section);
-            // create the task    
-            task_section.appendChild(this.createTask(item.task, item.date));
-            // create delete button
-            task_section.appendChild(this.createDeleteBtn(task_section));
+            const taskSection = document.createElement("div");
+            taskSection.className = "taskSection";
+            taskSection.id = item.taskId;
+            document.body.querySelector("div.taskList").appendChild(taskSection);
+            taskSection.appendChild(this.createTask(item.task, item.date));
+            taskSection.appendChild(this.createDeleteBtn(taskSection));
         });
     };
 
@@ -86,69 +81,60 @@ class Main {
         if (minutes.length === 1){
             minutes = "0" + minutes;
         }
-        p.innerHTML = date.getDate() + "/" + 
-                      (date.getMonth()+1) + "/" + 
-                      date.getFullYear() + "<br/>" + 
-                      date.getHours() + ":" + 
-                      minutes;
+        p.innerHTML = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` + "<br/>" + `${date.getHours()}:${minutes}`;
         p.className = "time";
         p.id = dateString;
         p.style.fontSize = '10px';
         return p;
     };
 
-
     // clear all tasks
     clearAll(){
-        const taskSection = document.body.querySelectorAll("div.taskSection");
-        taskSection.forEach(elem => {
+        const taskSections = document.body.querySelectorAll("div.taskSection");
+        taskSections.forEach(elem => {
             elem.classList.add("removed");
             setTimeout(async () => {
                 elem.remove();
-                const task_date = elem.querySelectorAll('p');
-                await this.itemClient.deleteTask(task_date[0].innerText, task_date[1].id);
+                await this.itemClient.deleteTask(elem.id);
             }, 800);
         });
     };
 
-
     // sort tasks by date they created
     sortTime (){
         const taskSections = document.body.querySelectorAll("div.taskSection");
-        let ts_array = [].map.call(taskSections, (elem) => {return elem;});
-        ts_array.sort((a,b) => {
+        let tmpTaskSections = [...taskSections];
+        tmpTaskSections.sort((a,b) => {
             a = a.querySelector("div.tasks").querySelector("p.time").id;
             b = b.querySelector("div.tasks").querySelector("p.time").id;
-            if (this.asc_time){
+            if (this.ascTime){
                 return new Date(a) - new Date(b);
             }
             return new Date(b) - new Date(a);
         });
-        this.asc_time = !this.asc_time;
-        for (let i=0; i < ts_array.length; i++){
-            taskSections[i].parentNode.appendChild(ts_array[i]);
+        this.ascTime = !this.ascTime;
+        for (let i=0; i < tmpTaskSections.length; i++){
+            taskSections[i].parentNode.appendChild(tmpTaskSections[i]);
         }
     };
-
 
     // sort tasks by name
     sortAZ(){
         const taskSections = document.body.querySelectorAll("div.taskSection");
-        let ts_array = [].map.call(taskSections, (elem) => {return elem;});
-        ts_array.sort((a,b) => {
+        let tmpTaskSections = [...taskSections];
+        tmpTaskSections.sort((a,b) => {
             a = a.querySelector("div.tasks").querySelector("p").innerText;
             b = b.querySelector("div.tasks").querySelector("p").innerText;
-            if (this.asc_AZ){
+            if (this.ascAZ){
                 return a.localeCompare(b);
             }
             return b.localeCompare(a);
         });
-        this.asc_AZ = !this.asc_AZ;
-        for (let i=0; i < ts_array.length; i++){
-            taskSections[i].parentNode.appendChild(ts_array[i]);
+        this.ascAZ = !this.ascAZ;
+        for (let i=0; i < tmpTaskSections.length; i++){
+            taskSections[i].parentNode.appendChild(tmpTaskSections[i]);
         }
     };
-
     
     // adding the event listeners for buttons functions
     async init(){
@@ -174,7 +160,6 @@ class Main {
     };
 
 }
-
 
 const main = new Main();
 

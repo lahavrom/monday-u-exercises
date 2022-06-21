@@ -1,40 +1,47 @@
-// The ItemManager should go here. Remember that you have to export it.
-
 const ItemManager = require('./ItemManager');
 
-const itemManager = new ItemManager;
+const itemManager = new ItemManager();
 
 async function getTasks(req, res) {
-    let data = await itemManager.getTasks();
-    if (!data) {
-        data = [];
+    try{
+        let data = await itemManager.getTasks();
+        if (!data) {
+            data = [];
+        }
+        res.status(200).json(data);
+    } catch(error){
+        res.status(error.statusCode).json(error.message);
     }
-    res.status(200).json(data);
 }
 
 async function addTask(req, res) {
-    if (!req.body.task || !req.body.date) {
+    const { task, date } = req.body;
+    if (!task || !date) {
         const error = new Error("wrong parameters");
         error.statusCode = 400;
         throw error;
     }
     try{
-        await itemManager.addTask(req.body);
+        await itemManager.addTask(task, date);
     } catch(error) {
-        // throw error;
         return res.status(400).json(error.message);
     }
     res.status(200).json(req.body);
 }
 
 async function deleteTask(req, res) {
-    if (!req.body.task || !req.body.date) {
+    const { taskId } = req.body;
+    if (!taskId) {
         const error = new Error("wrong parameters");
         error.statusCode = 400;
         throw error;
     }
-    await itemManager.deleteTask(req.body);
+    await itemManager.deleteTask(taskId);
     res.status(200).json(req.body);
 }
 
-module.exports = { getTasks, addTask, deleteTask }
+module.exports = { 
+    getTasks, 
+    addTask, 
+    deleteTask 
+};
