@@ -1,7 +1,8 @@
 {
-  "name": "ex4",
+  "name": "exercise",
   "version": "1.0.0",
-  "description": "server that will handle all our todo items",
+  "description": "monday-u-exercise",
+  "repository": "https://github.com/lahavrom/monday-u-exercises",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,6 +19,11 @@
     "express": "^4.18.1",
     "express-async-errors": "^3.1.1",
     "fs": "0.0.1-security",
-    "nodemon": "^2.0.16"
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.16",
+    "sequelize": "^6.21.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.4.1"
   }
 }

@@ -40,4 +40,21 @@ class ItemClient {
         }
     }
 
+    async changeTaskStatus(taskId) {
+        try {
+            await axios.post(`${this.API_BASE}/status`, 
+                {
+                    "taskId": taskId
+                }, 
+                { 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    } 
+                }
+            );
+        } catch(error) {
+            throw new Error();
+        }
+    }
+
 }
