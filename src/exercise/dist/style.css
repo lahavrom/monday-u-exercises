@@ -72,11 +72,11 @@ button {
     opacity: 0.9;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    /* justify-content: space-between; */
+    position: relative;
 }
 .tasks:hover{
     opacity: 1;
-    cursor: pointer;
 }
 
 .deleteBtn {
@@ -125,6 +125,19 @@ p {
     margin-top: 0;
     margin-bottom: 0;
     text-align: center;
+}
+
+.time {
+    position: absolute;
+    right: 5px;
+    font-size: 10px;
+}
+
+.checkBox {
+    padding: 0;
+    width: auto;
+    align-self: center;
+    cursor: pointer;
 }
 
 .loader {

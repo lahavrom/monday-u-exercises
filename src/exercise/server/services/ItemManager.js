@@ -1,18 +1,24 @@
-const fs = require('fs').promises;
+const storage = require('./storage_service');
 const PokemonClient = require('../clients/PokemonClient');
 const { FailedFetchPokemonError, PokemonAlreadyInError, SystemFail } = require('../Errors');
-const tasksFile = 'tasks.json';
 
 module.exports = class ItemManager {
     constructor() {
-        this.taskId = 1;
         this.pokemonClient = new PokemonClient();
     }
 
     async getTasks(){
         try {
-            const data = await fs.readFile(tasksFile);
-            return JSON.parse(data.toString());
+            const data = await storage.getItems();
+            if (data.length === 0){
+                return [];
+            }
+            return data.map(item => {
+                return {"taskId": item.id, 
+                        "task": item.ItemName, 
+                        "date": item.date, 
+                        "status": item.status};
+            });
         } catch(err) {
             throw SystemFail;
         }
@@ -29,33 +35,22 @@ module.exports = class ItemManager {
     }
 
     async addRegTask(task, date) {
-        let data = await this.getTasks();
-        if (!data) {
-            data = [];
-        }
-        data.push({"task":task, "date":date, "taskId": this.taskId});
-        this.taskId++;
         try {
-            await fs.writeFile(tasksFile, JSON.stringify(data));
+            await storage.createItem({"ItemName": task, "date": date});
         } catch (error) {
             throw SystemFail;
         }
     }
 
     async addPokemon(pokemon, date) {
-        let data = await this.getTasks();
-        if (!data){
-            data = [];
-        }
+        const data = await this.getTasks();
         const task = `Catch ${pokemon.name}, the ${pokemon.types[0].type.name} type pokemon`;
         if (data.find(value => value.task === task)) {
             PokemonAlreadyInError.message = `The task: ${task} was already entered`;
             throw PokemonAlreadyInError;
         }
-        data.push({"task": task, "date": date, "taskId": this.taskId});
-        this.taskId++;
         try {
-            await fs.writeFile(tasksFile, JSON.stringify(data));
+            await storage.createItem({"ItemName": task, "date": date});
         } catch (error) {
             throw SystemFail;
         }
@@ -74,18 +69,19 @@ module.exports = class ItemManager {
     }
 
     async deleteTask(taskId) {
-        let data = await this.getTasks();
-        if (!data){
-            return;
-        }
-        data = data.filter((value) => {
-            return value.taskId !== parseInt(taskId);
-        });
         try {
-            await fs.writeFile(tasksFile, JSON.stringify(data));
+            await storage.deleteItem(taskId);
         } catch (error) {
             throw SystemFail;
         }
     };
+
+    async changeTaskStatus(taskId, status) {
+        try {
+            await storage.changeItemStatus(taskId, status);
+        } catch(error) {
+            throw SystemFail;
+        }
+    }
 
 }

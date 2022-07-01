@@ -6,12 +6,12 @@ class Main {
         this.itemClient = new ItemClient();
     };
 
-    createTask(value, date){
+    createTask(value, date, taskId, status){
         const taskText = document.createElement("p");
         taskText.innerText = value;
         const taskElem = document.createElement("div");
         taskElem.className = "tasks";
-        taskElem.onclick = () => alert("Task: \n" + taskText.innerText);
+        taskElem.appendChild(this.createCheckBox(taskId, status));
         taskElem.appendChild(taskText);
         taskElem.appendChild(this.taskTime(date));
         return taskElem;
@@ -45,7 +45,7 @@ class Main {
             taskSection.className = "taskSection";
             taskSection.id = item.taskId;
             document.body.querySelector("div.taskList").appendChild(taskSection);
-            taskSection.appendChild(this.createTask(item.task, item.date));
+            taskSection.appendChild(this.createTask(item.task, item.date, item.taskId, item.status));
             taskSection.appendChild(this.createDeleteBtn(taskSection));
         });
     };
@@ -73,6 +73,26 @@ class Main {
         task.value = '';
     }
 
+    createCheckBox(taskId, status){
+        const checkBox = document.createElement("input");
+        checkBox.className = "checkBox";
+        checkBox.type = "checkBox";
+        status ? checkBox.checked = true : checkBox.checked = false;
+        checkBox.onclick = async () => {
+            try {
+                if (checkBox.checked) {
+                    await this.itemClient.changeTaskStatus(taskId, true);
+                } else{
+                    await this.itemClient.changeTaskStatus(taskId, false);
+                }
+            } catch(error) {
+                checkBox.setCustomValidity("Something went wrong, try again later");
+                checkBox.reportValidity();
+            }
+        }
+        return checkBox;
+    }
+
     // returns the element that shows the date & time the task created
     taskTime(dateString){
         let date = new Date(dateString);
@@ -84,7 +104,6 @@ class Main {
         p.innerHTML = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}` + "<br/>" + `${date.getHours()}:${minutes}`;
         p.className = "time";
         p.id = dateString;
-        p.style.fontSize = '10px';
         return p;
     };
 

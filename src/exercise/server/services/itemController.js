@@ -36,12 +36,32 @@ async function deleteTask(req, res) {
         error.statusCode = 400;
         throw error;
     }
-    await itemManager.deleteTask(taskId);
-    res.status(200).json(req.body);
+    try{
+        await itemManager.deleteTask(taskId);
+    } catch(error) {
+        res.status(500).json(error.message);
+    }
+    res.status(200);
+}
+
+async function changeTaskStatus(req, res) {
+    const { taskId, status } = req.body;
+    if (!taskId) {
+        const error = new Error("wrong parameters");
+        error.statusCode = 400;
+        throw error;
+    }
+    try{
+        await itemManager.changeTaskStatus(taskId, status);
+        res.status(200).json(req.body);
+    } catch(error) {
+        res.status(500).json(error.message);
+    }
 }
 
 module.exports = { 
     getTasks, 
     addTask, 
-    deleteTask 
+    deleteTask,
+    changeTaskStatus
 };
