@@ -40,11 +40,12 @@ class ItemClient {
         }
     }
 
-    async changeTaskStatus(taskId) {
+    async changeTaskStatus(taskId, status) {
         try {
             await axios.post(`${this.API_BASE}/status`, 
                 {
-                    "taskId": taskId
+                    "taskId": taskId,
+                    "status": status
                 }, 
                 { 
                     headers: {

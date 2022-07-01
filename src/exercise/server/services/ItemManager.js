@@ -76,9 +76,9 @@ module.exports = class ItemManager {
         }
     };
 
-    async changeTaskStatus(taskId) {
+    async changeTaskStatus(taskId, status) {
         try {
-            await storage.changeItemStatus(taskId);
+            await storage.changeItemStatus(taskId, status);
         } catch(error) {
             throw SystemFail;
         }

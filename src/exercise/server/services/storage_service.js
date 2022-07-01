@@ -1,4 +1,4 @@
-const { Items } = require('../db/models');
+const { Items } = require('../storage/models');
 
 class StorageService {
     
@@ -14,10 +14,10 @@ class StorageService {
         });
     }
 
-    changeItemStatus = async (itemId) => {
-        const item = await Items.findByPk(itemId, { attributes: ['status'] });
+    changeItemStatus = async (itemId, status) => {
+        console.log(status);
         await Items.update(
-            { status: !item.status },
+            { status: status },
             { where: { id: itemId } }
         );
     }

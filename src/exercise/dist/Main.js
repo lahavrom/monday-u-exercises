@@ -77,15 +77,19 @@ class Main {
         const checkBox = document.createElement("input");
         checkBox.className = "checkBox";
         checkBox.type = "checkBox";
+        status ? checkBox.checked = true : checkBox.checked = false;
         checkBox.onclick = async () => {
             try {
-                await this.itemClient.changeTaskStatus(taskId);
+                if (checkBox.checked) {
+                    await this.itemClient.changeTaskStatus(taskId, true);
+                } else{
+                    await this.itemClient.changeTaskStatus(taskId, false);
+                }
             } catch(error) {
                 checkBox.setCustomValidity("Something went wrong, try again later");
                 checkBox.reportValidity();
             }
         }
-        status ? checkBox.checked = true : checkBox.checked = false;
         return checkBox;
     }
 
