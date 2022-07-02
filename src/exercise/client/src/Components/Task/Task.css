@@ -1,0 +1,66 @@
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.time {
+    position: absolute;
+    right: 5px;
+    font-size: 10px;
+}
+
+.taskSection {
+    display: flex;
+    margin-bottom: 5px;
+    transition: opacity 1s;
+}
+
+.removed {
+    opacity: 0;
+}
+
+.task {
+    padding: 12px;
+    background-color: rgb(225, 225, 225);
+    border-radius: 5px;
+    opacity: 0.9;
+    width: 100%;
+    display: flex;
+    position: relative;
+
+}
+
+.task:hover {
+    opacity: 1;
+}
+
+.checkBox {   
+    align-self: center;
+}
+
+.deleteBtn {
+    height: 47px;
+    display: none;
+    animation-name: fadeInOpacity;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.5s;
+}
+
+@keyframes fadeInOpacity {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+.task:hover + .deleteBtn {
+    display: flex;
+}
+.deleteBtn:hover {
+    opacity: 1;
+    display: flex;
+}

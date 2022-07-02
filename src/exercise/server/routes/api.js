@@ -1,4 +1,3 @@
-// Define your endpoints here (this is your "controller file")
 const express = require('express');
 const { getTasks, addTask, deleteTask, changeTaskStatus } = require('../services/itemController');
 
