@@ -39,7 +39,7 @@ async function deleteTask(req, res) {
   if (taskId === "all") {
     try {
       await itemManager.deleteAll();
-      res.status(200);
+      res.status(200).json(taskId);
       return;
     } catch (error) {
       res.status(500).json(error.message);
@@ -50,7 +50,7 @@ async function deleteTask(req, res) {
   } catch (error) {
     res.status(500).json(error.message);
   }
-  res.status(200);
+  res.status(200).json(taskId);
 }
 
 async function changeTaskStatus(req, res) {
