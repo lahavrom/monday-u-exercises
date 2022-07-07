@@ -4,7 +4,7 @@ import "monday-ui-react-core/dist/main.css";
 import Header from "./Components/Header/Header";
 import InputItem from "./Components/InputItem/InputItem";
 import BottomButtons from "./Components/BottomButtons/BottomButtons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import TaskList from "./Components/TaskList/TaskList";
 import {
   getTasks,
@@ -16,13 +16,13 @@ import {
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  async function fetchTasks() {
+  async function updateTasks() {
     const newTasks = await getTasks();
     setTasks(newTasks.data);
   }
 
   useEffect(() => {
-    fetchTasks();
+    updateTasks();
   }, []);
 
   const handleDelete = useCallback(async (taskId) => {
@@ -31,22 +31,30 @@ function App() {
   });
 
   const handleDeleteAll = useCallback(async () => {
+    taskSections.current = [];
     setTasks([]);
     await deleteTask("all");
   });
 
+  const taskSections = useRef([]);
+
   return (
     <DialogContentContainer className="container">
       <Header title="DoDo app" subTitle="The app that will help you do" />
-      <InputItem setTasks={fetchTasks} addNewTask={addTask} />
-      <hr></hr>
+      <InputItem updateTasks={updateTasks} addNewTask={addTask} />
       <TaskList
         tasks={tasks}
-        setTasks={fetchTasks}
+        updateTasks={updateTasks}
         deleteTask={handleDelete}
         changeTaskStatus={changeTaskStatus}
+        taskSections={taskSections}
       />
-      <BottomButtons deleteAll={handleDeleteAll} />
+      <BottomButtons
+        tasks={tasks}
+        taskSections={taskSections}
+        setTasks={setTasks}
+        deleteAll={handleDeleteAll}
+      />
     </DialogContentContainer>
   );
 }

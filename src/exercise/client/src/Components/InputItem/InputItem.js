@@ -1,29 +1,28 @@
 import "./InputItem.css";
-import { Button } from "monday-ui-react-core";
+import { Button, Loader } from "monday-ui-react-core";
 import { Add } from "monday-ui-react-core/dist/allIcons";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-export default function InputItem({ setTasks, addNewTask }) {
+export default function InputItem({ updateTasks, addNewTask }) {
   const [input, setInput] = useState("");
   const [loader, setLoader] = useState(false);
-
-  const inputBar = document.getElementById("newTask");
+  const inputBar = useRef(null);
 
   async function addTask(task) {
     if (task === "") {
-      inputBar.setCustomValidity("You forgot to type the task!");
-      inputBar.reportValidity();
+      inputBar.current.setCustomValidity("You forgot to type the task!");
+      inputBar.current.reportValidity();
       return;
     }
     setLoader(true);
     if (task) {
       try {
         await addNewTask(task, new Date());
-        setTasks();
+        updateTasks();
       } catch (error) {
         setLoader(false);
-        inputBar.setCustomValidity(error.message);
-        inputBar.reportValidity();
+        inputBar.current.setCustomValidity(error.message);
+        inputBar.current.reportValidity();
         return;
       }
     }
@@ -39,6 +38,7 @@ export default function InputItem({ setTasks, addNewTask }) {
         id="newTask"
         maxLength="25"
         placeholder="Add your new task!"
+        ref={inputBar}
         value={input}
         onChange={(event) => setInput(event.target.value)}
         onKeyPress={(event) => {
@@ -47,7 +47,7 @@ export default function InputItem({ setTasks, addNewTask }) {
           }
         }}
       />
-      {loader ? <div className="loader"></div> : <></>}
+      {loader ? <Loader color={Loader.colors.PRIMARY} size={30} /> : <></>}
       <Button
         onClick={() => {
           addTask(input);

@@ -23,36 +23,36 @@ export default function Task({
   task,
   date,
   status,
-  setTasks,
+  refer,
+  updateTasks,
   deleteTask,
   changeTaskStatus,
 }) {
-  const [showTask, setShowTask] = useState("taskSection");
+  const [showTask, setShowTask] = useState(true);
 
   async function handleDelete() {
-    setShowTask("taskSection removed");
+    setShowTask(false);
     setTimeout(() => {
       deleteTask(taskId);
     }, 800);
   }
 
   async function handleChangeStatus() {
-    let change;
-    if (status) {
-      change = false;
-    } else {
-      change = true;
-    }
+    const change = !status;
     try {
       await changeTaskStatus(taskId, change);
-      setTasks();
+      updateTasks();
     } catch (error) {
       alert("Something went wrong, try again later");
     }
   }
 
   return (
-    <div className={showTask} id={taskId}>
+    <div
+      className={showTask ? "taskSection" : "taskSection removed"}
+      id={taskId}
+      ref={refer}
+    >
       <div className="task">
         <Checkbox
           onChange={handleChangeStatus}
@@ -81,7 +81,7 @@ Task.propTypes = {
   task: PropTypes.string,
   date: PropTypes.string,
   status: PropTypes.bool,
-  setTasks: PropTypes.func,
+  updateTasks: PropTypes.func,
   deleteTask: PropTypes.func,
   changeTaskStatus: PropTypes.func,
 };

@@ -4,21 +4,23 @@ import PropTypes from "prop-types";
 
 export default function TaskList({
   tasks,
-  setTasks,
+  updateTasks,
   deleteTask,
   changeTaskStatus,
+  taskSections,
 }) {
   return (
     <div>
-      {tasks.map(({ taskId, task, date, status }) => {
+      {tasks.map(({ taskId, task, date, status }, i) => {
         return (
           <Task
             taskId={taskId}
             task={task}
             date={date}
             status={status}
+            refer={(el) => (taskSections.current[i] = el)}
             key={taskId}
-            setTasks={setTasks}
+            updateTasks={updateTasks}
             deleteTask={deleteTask}
             changeTaskStatus={changeTaskStatus}
           />
@@ -30,7 +32,7 @@ export default function TaskList({
 
 Task.propTypes = {
   tasks: PropTypes.array,
-  setTasks: PropTypes.func,
+  updateTasks: PropTypes.func,
   deleteTask: PropTypes.func,
   changeTaskStatus: PropTypes.func,
 };
