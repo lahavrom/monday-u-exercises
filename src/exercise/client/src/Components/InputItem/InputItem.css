@@ -1,0 +1,15 @@
+.addTask {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.inputTask {
+    padding: 12px;
+    width: 80%;
+    font-family: cursive;
+    height: 40px;
+    border-radius: 8px;
+    border-color: #f3f3f3;
+}

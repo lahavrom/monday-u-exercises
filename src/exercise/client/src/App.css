@@ -1,0 +1,12 @@
+* {
+  box-sizing: border-box;
+}
+
+.container {
+  width: 30%;
+  min-width: 450px;
+  margin: auto;
+  margin-top: 30px;
+  font-family: cursive;
+  display: grid;
+}
