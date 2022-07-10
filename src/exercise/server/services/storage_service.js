@@ -4,7 +4,8 @@ class StorageService {
   getItems = () => Items.findAll();
 
   createItem = async (item) => {
-    await Items.create(item);
+    const task = await Items.create(item);
+    return { ...task.dataValues, status: false };
   };
 
   deleteItem = async (itemId) => {

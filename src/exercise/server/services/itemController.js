@@ -22,11 +22,11 @@ async function addTask(req, res) {
     throw error;
   }
   try {
-    await itemManager.addTask(task, date);
+    const tasks = await itemManager.addTask(task, date);
+    res.status(200).json(tasks);
   } catch (error) {
-    return res.status(400).json(error.message);
+    res.status(400).json(error.message);
   }
-  res.status(200).json(req.body);
 }
 
 async function deleteTask(req, res) {

@@ -1,12 +1,13 @@
 import "./BottomButtons.css";
 import { Button } from "monday-ui-react-core";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function BottomButtons({
   tasks,
-  setTasks,
-  deleteAll,
   taskSections,
+  setTasksAction,
+  deleteTaskAction,
 }) {
   const [ascTime, setAscTime] = useState(false);
   const [ascAZ, setAscAZ] = useState(true);
@@ -19,7 +20,11 @@ export default function BottomButtons({
       }
     });
     setTimeout(async () => {
-      await deleteAll();
+      try {
+        await deleteTaskAction("all");
+      } catch (err) {
+        toast.error(err.message);
+      }
     }, 800);
   }
 
@@ -28,11 +33,11 @@ export default function BottomButtons({
     const tmp = [...tasks];
     tmp.sort((a, b) => {
       if (ascAZ) {
-        return a.task.localeCompare(b.task);
+        return a.ItemName.localeCompare(b.ItemName);
       }
-      return b.task.localeCompare(a.task);
+      return b.ItemName.localeCompare(a.ItemName);
     });
-    setTasks(tmp);
+    setTasksAction(tmp);
   }
 
   // sort tasks by date they created
@@ -44,7 +49,7 @@ export default function BottomButtons({
       }
       return new Date(b.date) - new Date(a.date);
     });
-    setTasks(tmp);
+    setTasksAction(tmp);
   }
 
   return (
