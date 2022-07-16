@@ -3,8 +3,7 @@ import { Button, Loader } from "monday-ui-react-core";
 import { Add } from "monday-ui-react-core/dist/allIcons";
 import { useState, useRef } from "react";
 
-export default function InputItem({ updateTasks, addNewTask }) {
-  const [input, setInput] = useState("");
+export default function InputItem({ addTaskAction }) {
   const [loader, setLoader] = useState(false);
   const inputBar = useRef(null);
 
@@ -17,8 +16,7 @@ export default function InputItem({ updateTasks, addNewTask }) {
     setLoader(true);
     if (task) {
       try {
-        await addNewTask(task, new Date());
-        updateTasks();
+        await addTaskAction(task, new Date());
       } catch (error) {
         setLoader(false);
         inputBar.current.setCustomValidity(error.message);
@@ -27,7 +25,7 @@ export default function InputItem({ updateTasks, addNewTask }) {
       }
     }
     setLoader(false);
-    setInput("");
+    inputBar.current.value = "";
   }
 
   return (
@@ -39,18 +37,16 @@ export default function InputItem({ updateTasks, addNewTask }) {
         maxLength="25"
         placeholder="Add your new task!"
         ref={inputBar}
-        value={input}
-        onChange={(event) => setInput(event.target.value)}
         onKeyPress={(event) => {
           if (event.key === "Enter") {
-            addTask(input);
+            addTask(inputBar.current.value);
           }
         }}
       />
       {loader ? <Loader color={Loader.colors.PRIMARY} size={30} /> : <></>}
       <Button
         onClick={() => {
-          addTask(input);
+          addTask(inputBar.current.value);
         }}
         id="addBtn"
       >

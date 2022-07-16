@@ -3,6 +3,7 @@ import { Checkbox, Button } from "monday-ui-react-core";
 import { Delete } from "monday-ui-react-core/dist/allIcons";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 function taskDate(dateString) {
   let date = new Date(dateString);
@@ -24,7 +25,6 @@ export default function Task({
   date,
   status,
   refer,
-  updateTasks,
   deleteTask,
   changeTaskStatus,
 }) {
@@ -32,8 +32,8 @@ export default function Task({
 
   async function handleDelete() {
     setShowTask(false);
-    setTimeout(() => {
-      deleteTask(taskId);
+    setTimeout(async () => {
+      await deleteTask(taskId);
     }, 800);
   }
 
@@ -41,9 +41,8 @@ export default function Task({
     const change = !status;
     try {
       await changeTaskStatus(taskId, change);
-      updateTasks();
     } catch (error) {
-      alert("Something went wrong, try again later");
+      toast.error("Something went wrong, try again later");
     }
   }
 

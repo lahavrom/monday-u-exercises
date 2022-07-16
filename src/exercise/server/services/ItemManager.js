@@ -17,14 +17,7 @@ module.exports = class ItemManager {
       if (data.length === 0) {
         return [];
       }
-      return data.map((item) => {
-        return {
-          taskId: item.id,
-          task: item.ItemName,
-          date: item.date,
-          status: item.status,
-        };
-      });
+      return data;
     } catch (err) {
       throw SystemFail;
     }
@@ -42,7 +35,8 @@ module.exports = class ItemManager {
 
   async addRegTask(task, date) {
     try {
-      await storage.createItem({ ItemName: task, date: date });
+      const newTask = await storage.createItem({ ItemName: task, date: date });
+      return newTask;
     } catch (error) {
       throw SystemFail;
     }
@@ -51,12 +45,13 @@ module.exports = class ItemManager {
   async addPokemon(pokemon, date) {
     const data = await this.getTasks();
     const task = `Catch ${pokemon.name}, the ${pokemon.types[0].type.name} type pokemon`;
-    if (data.find((value) => value.task === task)) {
+    if (data.find((value) => value.ItemName === task)) {
       PokemonAlreadyInError.message = `The task: ${task} was already entered`;
       throw PokemonAlreadyInError;
     }
     try {
-      await storage.createItem({ ItemName: task, date: date });
+      const newTask = await storage.createItem({ ItemName: task, date: date });
+      return newTask;
     } catch (error) {
       throw SystemFail;
     }
@@ -65,12 +60,16 @@ module.exports = class ItemManager {
   async addTask(task, date) {
     let taskSplit = task.split(",");
     if (isNaN(taskSplit[0])) {
-      await this.addRegTask(task, date);
-      return;
-    }
-    const pokemons = await this.getPokemon(taskSplit);
-    for (let pokemon of pokemons) {
-      await this.addPokemon(pokemon, date);
+      const newTask = await this.addRegTask(task, date);
+      return newTask;
+    } else {
+      const pokemons = await this.getPokemon(taskSplit);
+      let newTasks = [];
+      for (let pokemon of pokemons) {
+        const newTask = await this.addPokemon(pokemon, date);
+        newTasks.push(newTask);
+      }
+      return newTasks;
     }
   }
 
