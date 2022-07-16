@@ -11,29 +11,12 @@ input#search {
 .searchBar {
     width: 25%;
     transition: width 0.4s ease-in-out;
-    /* font-family: cursive; */
-    /* height: 35px; 
-    box-sizing: border-box;
-    border: 1px solid #c3c6d4;
-    border-radius: 8px;
-    font-size: 14px; 
-    background-color: white;
-    background-image: url('https://www.w3schools.com/howto/searchicon.png');
-    background-position: 4px 9px; 
-    background-size: 15px 15px;
-    background-repeat: no-repeat;
-    padding: 12px 15px 12px 25px; 
-    transition: width 0.4s ease-in-out;  */
 }
+
 .searchBarClicked{
     width: 80%;
     transition: width 0.4s ease-in-out;
-
 }
-
-/* .searchBar:active, .searchBar:checked {
-    width: 80%;
-} */
 
 .choiceFilter {
     width: 25%;
