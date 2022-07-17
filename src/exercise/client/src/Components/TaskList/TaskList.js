@@ -18,7 +18,11 @@ export default function TaskList({
   }, []);
 
   const getTasks = useCallback(async () => {
-    await getTasksAction();
+    try {
+      await getTasksAction();
+    } catch (error) {
+      toast.error(error.message, { toastId: "error" });
+    }
   }, [getTasksAction]);
 
   const deleteTask = useCallback(
@@ -26,7 +30,7 @@ export default function TaskList({
       try {
         await deleteTaskAction(taskId);
       } catch (err) {
-        toast.error(err.message);
+        toast.error(err.message, { toastId: "error" });
       }
     },
     [deleteTaskAction]
@@ -37,7 +41,7 @@ export default function TaskList({
       try {
         await changeTaskStatusAction(taskId, status);
       } catch (err) {
-        toast.error(err.message);
+        toast.error(err.message, { toastId: "error" });
       }
     },
     [changeTaskStatusAction]
@@ -46,7 +50,7 @@ export default function TaskList({
   const tasksToRender = filterTasks.length === 0 ? tasks : filterTasks;
 
   return (
-    <div>
+    <div className="taskList">
       {tasksToRender
         .filter((task) => task.ItemName.includes(searchFilter))
         .map(({ id, ItemName, date, status }, i) => {

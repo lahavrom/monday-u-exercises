@@ -7,7 +7,7 @@ export async function getTasks() {
     const tasks = await axios.get(API_BASE);
     return tasks.data;
   } catch (error) {
-    alert("Something went wrong, please try again later");
+    throw new Error("Something went wrong, try again later");
   }
 }
 
@@ -36,7 +36,7 @@ export async function deleteTask(taskId) {
       },
     });
   } catch (error) {
-    alert("Something went wrong, please try again later");
+    throw new Error("Something went wrong, try again later");
   }
 }
 
@@ -55,6 +55,6 @@ export async function changeTaskStatus(taskId, status) {
       }
     );
   } catch (error) {
-    throw new Error();
+    throw new Error("Something went wrong, try again later");
   }
 }

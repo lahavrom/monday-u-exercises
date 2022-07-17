@@ -5,6 +5,7 @@ const initialState = {
 export default function tasksReducer(state = initialState, action) {
   switch (action.type) {
     case "GET_TASKS":
+    case "SET_TASKS":
       return { taskList: action.tasks };
 
     case "ADD":
@@ -24,9 +25,6 @@ export default function tasksReducer(state = initialState, action) {
       );
       state.taskList[taskIndex].status = !state.taskList[taskIndex].status;
       return { taskList: [...state.taskList] };
-
-    case "SET_TASKS":
-      return { taskList: action.tasks };
 
     case "ERROR":
       throw new Error(action.errorMsg);
